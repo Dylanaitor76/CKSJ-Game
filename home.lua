@@ -16,6 +16,7 @@ end
 function home.keypressed(key)
     if key == 'escape' then
         state = g
+        state.load()
     end
 end
 
