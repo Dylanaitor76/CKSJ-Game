@@ -1,5 +1,6 @@
 h = require 'home'
 g = require 'game'
+d = require 'dead'
 p = require 'pause'
 b = require 'blocks'
 
