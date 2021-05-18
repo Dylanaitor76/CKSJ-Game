@@ -41,8 +41,7 @@ function pause.keypressed(key)
 
     if psely == 13 then
         if key == 'return' then
-            state = g --change state to game (still resets game)
-            state.load()
+            state = g --change state to game (still resets game?)
         end
     end
 

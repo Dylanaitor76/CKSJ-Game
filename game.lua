@@ -5,16 +5,28 @@ d = require 'dead'
 
 function game.load()
     player = love.graphics.newImage('playersprite.png')
-    x = 10
-    y = 314
+    playerx = 10
+    playery = -50
 
     right = true 
     left = false
-    jump = false
-    jump_power = -100
+    jump = true
+    jumps = 0
+    doublejump = true
+    gravity = -10
+
+    equip = 0
+
     shoot = false
+    projectiles = {}
+    projectiles[1] = makeProjectile()
+
     slash = true
-    gravity = 3
+
+    item1 = true
+    item2= true
+    item3 = true
+    item4 = true
 
     blank = love.graphics.newImage('blank.png')
 
@@ -26,20 +38,39 @@ function game.load()
 
 end
 
-function game.update()
+function game.update(dt)
+
+    for i=1, #projectiles do
+        projectiles[i].x = projectiles[i].x + projectiles[i].speed
+        projectiles[i].dist = projectiles[i].dist + projectiles[i].speed
+        if projectiles[i].dist > 400 then
+            projectiles[i].speed = 0
+        end
+    end
+
     if right == true then
         if love.keyboard.isDown('d') then
-            x = x + 2
+            playerx = playerx + 2
         end
     end
 
     if left == true then
         if love.keyboard.isDown('a') then
-            x = x - 2
+            playerx = playerx - 2
         end
     end
 
-    --y = y + gravity
+    playery = playery + gravity
+
+    if gravity < 15 then
+        gravity = gravity + 0.5
+    end
+
+    if playery >= 314 then
+        gravity = 0
+        playery = 314
+        jumps = 0
+    end
 
 
     if health <= 0 then
@@ -53,7 +84,7 @@ function game.draw()
     love.graphics.setColor(0, 0, 1)
     love.graphics.rectangle('fill', 0, 384, 816, 216)
     love.graphics.setColor(1, 1, 1)
-    love.graphics.draw(player, x, y)
+    love.graphics.draw(player, playerx, playery)
 
     love.graphics.draw(blank, 0, 0)
     love.graphics.draw(blank, 50, 0)
@@ -78,12 +109,37 @@ function game.draw()
 
     love.graphics.draw(blank, 0, 550)
     love.graphics.print("1", 20, 535)
+    if equip == 1 then
+        love.graphics.setColor(1, 0, 0)
+        love.graphics.print("1", 20, 535)
+        love.graphics.setColor(1, 1, 1)
+    end
     love.graphics.draw(blank, 50, 550)
     love.graphics.print("2", 70, 535)
+    if equip == 2 then
+        love.graphics.setColor(1, 0, 0)
+        love.graphics.print("2", 70, 535)
+        love.graphics.setColor(1, 1, 1)
+    end
     love.graphics.draw(blank, 100, 550)
     love.graphics.print("3", 120, 535)
+    if equip == 3 then
+        love.graphics.setColor(1, 0, 0)
+        love.graphics.print("3", 120, 535)
+        love.graphics.setColor(1, 1, 1)
+    end
     love.graphics.draw(blank, 150, 550)
     love.graphics.print("4", 170, 535)
+    if equip == 4 then
+        love.graphics.setColor(1, 0, 0)
+        love.graphics.print("4", 170, 535)
+        love.graphics.setColor(1, 1, 1)
+    end
+    
+
+    for i=1, #projectiles do
+        love.graphics.rectangle('fill', projectiles[i].x, projectiles[i].y, 20, 20)
+    end
 
 end
 
@@ -93,15 +149,120 @@ function game.keypressed(key)
         state.load()
     end
 
-    if key == 'e' then
+    if key == 'q' then
         health = health - 1 
     end
-
-    if jump == true then
-        if key == 'space' then
-            y = y + jump_power
+    if doublejump == true then 
+        if jump == true then
+            jumps = jumps + 1
+            if key == 'space' and jumps <= 2 then
+                gravity = -12
+            end
+        end
+    else
+        if jump == true then
+            if key == 'space' and jumps <= 1 then
+                gravity = -12
+            end
         end
     end
+
+    if shoot == true then
+        if key == 'e' then
+            projectiles[#projectiles + 1] = makeProjectile()
+        end
+    end
+
+
+    
+    if item1 == true then
+        if key == '1' then
+            equip = 1
+        end
+    end
+
+    if item2 == true then
+        if key == '2' then
+            equip = 2
+        end
+    end
+
+    if item3 == true then
+        if key == '3' then
+            equip = 3
+        end
+    end
+
+    if item4 == true then
+        if key == '4' then
+            equip = 4
+        end
+    end
+
+
+
+    if equip == 1 then
+        if shoot == true then
+            if key == 'r' then
+                shoot = false
+                slash = true
+            end
+        elseif slash == true then
+            if key == 'r' then
+                slash = false
+                shoot = true
+            end
+        end
+    elseif equip == 2 then
+        if shoot == true then
+            if key == 'r' then
+                shoot = false
+                slash = true
+            end
+        elseif slash == true then
+            if key == 'r' then
+                slash = false
+                shoot = true
+            end
+        end
+    elseif equip == 3 then
+        if shoot == true then
+            if key == 'r' then
+                shoot = false
+                slash = true
+            end
+        elseif slash == true then
+            if key == 'r' then
+                slash = false
+                shoot = true
+            end
+        end
+    elseif equip == 4 then
+        if shoot == true then
+            if key == 'r' then
+                shoot = false
+                slash = true
+            end
+        elseif slash == true then
+            if key == 'r' then
+                slash = false
+                shoot = true
+            end
+        end
+    end
+end
+
+function makeProjectile() 
+    local pr = {
+        speed = 20,
+        dist = 0,
+        accelx = 0.5,
+        --img = newImage(..),
+        x = playerx,
+        y = playery + 30
+    }
+    return pr
+
 end
 
 return game
