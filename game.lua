@@ -5,28 +5,29 @@ d = require 'dead'
 
 function game.load()
     player = love.graphics.newImage('playersprite.png')
-    playerx = 10
+    playerx = 20
     playery = -50
 
     right = true 
-    left = false
-    jump = true
+    left = true
+    jump = false
     jumps = 0
-    doublejump = true
+    doublejump = false
     gravity = -10
 
     equip = 0
 
-    shoot = false
+    shoot = true
+    project = 0
     projectiles = {}
     projectiles[1] = makeProjectile()
 
     slash = true
 
     item1 = true
-    item2= true
-    item3 = true
-    item4 = true
+    item2= false
+    item3 = false
+    item4 = false
 
     blank = love.graphics.newImage('blank.png')
 
@@ -39,12 +40,41 @@ function game.load()
 end
 
 function game.update(dt)
+    
+    if screen == 1 then
+        if playerx == 760 then
+            screen = 2
+            playerx = 20
+        elseif playerx == 10 then
+            screen = -1
+            playerx = 750
+        end
+    elseif screen == 2 then
+        if playerx == 760 then
+            screen = 3
+            playerx = 20
+        elseif playerx == 10 then
+            screen = 1
+            playerx = 750
+        end
+    elseif screen == 3 then
+        if playerx == 10 then
+            screen = 2
+            playerx = 750
+        end
+    elseif screen == -1 then
+        if playerx == 760 then
+            screen = 1
+            playerx = 20
+        end
+    end
 
     for i=1, #projectiles do
         projectiles[i].x = projectiles[i].x + projectiles[i].speed
         projectiles[i].dist = projectiles[i].dist + projectiles[i].speed
         if projectiles[i].dist > 400 then
             projectiles[i].speed = 0
+            project = 0
         end
     end
 
@@ -85,6 +115,9 @@ function game.draw()
     love.graphics.rectangle('fill', 0, 384, 816, 216)
     love.graphics.setColor(1, 1, 1)
     love.graphics.draw(player, playerx, playery)
+    love.graphics.print(screen, 300, 300)
+
+    love.graphics.print(project, 380, 300)
 
     love.graphics.draw(blank, 0, 0)
     love.graphics.draw(blank, 50, 0)
@@ -136,9 +169,10 @@ function game.draw()
         love.graphics.setColor(1, 1, 1)
     end
     
-
     for i=1, #projectiles do
-        love.graphics.rectangle('fill', projectiles[i].x, projectiles[i].y, 20, 20)
+        if project == 1 then
+            love.graphics.rectangle('fill', projectiles[i].x, projectiles[i].y, 20, 20)
+        end
     end
 
 end
@@ -169,12 +203,13 @@ function game.keypressed(key)
 
     if shoot == true then
         if key == 'e' then
+            project = 1
             projectiles[#projectiles + 1] = makeProjectile()
         end
     end
 
 
-    
+
     if item1 == true then
         if key == '1' then
             equip = 1
