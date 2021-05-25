@@ -10,6 +10,9 @@ function game.load()
 
     right = true 
     left = false
+    rightspeed = 2
+    leftspeed = -2
+
     jump = false
     jumps = 0
     doublejump = false
@@ -34,7 +37,7 @@ function game.load()
     item3y = 200
     item4 = false
     item4x = 700
-    item4y = 314
+    item4y = 200
 
     blank = love.graphics.newImage('blank.png')
 
@@ -49,30 +52,30 @@ end
 function game.update(dt)
     
     if screen == 1 then
-        if playerx == 760 then
+        if playerx >= 760 then
             screen = 2
             playerx = 20
-        elseif playerx == 10 then
+        elseif playerx <= 10 then
             screen = -1
             playerx = 750
         end
     elseif screen == 2 then
-        if playerx == 760 then
+        if playerx >= 760 then
             screen = 3
             playerx = 20
-        elseif playerx == 10 then
+        elseif playerx <= 10 then
             screen = 1
             playerx = 750
         end
     elseif screen == 3 then
-        if playerx == 10 then
+        if playerx <= 10 then
             screen = 2
             playerx = 750
         elseif playerx >= 760 then
             playerx = 760
         end
     elseif screen == -1 then
-        if playerx == 760 then
+        if playerx >= 760 then
             screen = 1
             playerx = 20
         elseif playerx <= 10 then
@@ -91,13 +94,13 @@ function game.update(dt)
 
     if right == true then
         if love.keyboard.isDown('d') then
-            playerx = playerx + 2
+            playerx = playerx + rightspeed
         end
     end
 
     if left == true then
         if love.keyboard.isDown('a') and equip == 1 then
-            playerx = playerx - 2
+            playerx = playerx + leftspeed
         end
     end
 
@@ -150,7 +153,7 @@ function game.draw()
 
     if screen == 3 then
         love.graphics.rectangle('fill', item4x, item4y , 10, 10)
-        if playerx == item4x and playery <= item4y then
+        if playerx == item4x -20 and playery <= item4y then
             item4y = -100
         end
     end
@@ -232,6 +235,8 @@ function game.draw()
         love.graphics.setColor(1, 0, 0)
         item4 = true
         doublejump = true
+        rightspeed = 4
+        leftspeed = -4
         love.graphics.rectangle('fill', 165, 565, 20, 20)
         love.graphics.setColor(1, 1, 1)
     end
@@ -258,14 +263,14 @@ function game.keypressed(key)
     end
     if doublejump == true then 
         if jump == true then
-            jumps = jumps + 1
-            if key == 'space' and jumps <= 2 and equip == 2 then
+            if key == 'space' and jumps <= 1 and equip == 2 then
+                jumps = jumps + 1
                 gravity = -12
             end
         end
     else
         if jump == true then
-            if key == 'space' and jumps <= 1 and equip == 2 then
+            if key == 'space' and jumps <= 0 and equip == 2 then
                 jumps = jumps + 1
                 gravity = -12
             end
@@ -273,7 +278,7 @@ function game.keypressed(key)
     end
 
     if shoot == true then
-        if key == 'e' and equip == 4 then
+        if key == 'e' and equip == 3 then
             projectiles[#projectiles + 1] = makeProjectile()
         end
     end
