@@ -8,6 +8,9 @@ function game.load()
     playerx = 20
     playery = -50
 
+    projectilex = playerx
+    projectiley = playery + 30
+
     right = true 
     left = false
     rightspeed = 2
@@ -37,7 +40,10 @@ function game.load()
     item3y = 200
     item4 = false
     item4x = 700
-    item4y = 200
+    item4y = 314
+
+    item5x = 500
+    item5y = 200
 
     blank = love.graphics.newImage('blank.png')
 
@@ -55,17 +61,21 @@ function game.update(dt)
         if playerx >= 760 then
             screen = 2
             playerx = 20
+            projectilex = 20
         elseif playerx <= 10 then
             screen = -1
             playerx = 750
+            projectilex = 750
         end
     elseif screen == 2 then
         if playerx >= 760 then
             screen = 3
             playerx = 20
+            projectilex = 20
         elseif playerx <= 10 then
             screen = 1
             playerx = 750
+            projectilex = 750
         end
     elseif screen == 3 then
         if playerx <= 10 then
@@ -73,13 +83,16 @@ function game.update(dt)
             playerx = 750
         elseif playerx >= 760 then
             playerx = 760
+            projectilex = 750
         end
     elseif screen == -1 then
         if playerx >= 760 then
             screen = 1
             playerx = 20
+            projectilex = 20
         elseif playerx <= 10 then
             playerx = 10
+            projectilex = 10
         end
     end
 
@@ -95,16 +108,19 @@ function game.update(dt)
     if right == true then
         if love.keyboard.isDown('d') then
             playerx = playerx + rightspeed
+            projectilex = projectilex + rightspeed
         end
     end
 
     if left == true then
         if love.keyboard.isDown('a') and equip == 1 then
             playerx = playerx + leftspeed
+            projectilex = projectilex + leftspeed
         end
     end
 
     playery = playery + gravity
+    projectiley = projectiley + gravity
 
     if gravity < 15 then
         gravity = gravity + 0.5
@@ -139,14 +155,14 @@ function game.draw()
     
     if screen == -1 then
         love.graphics.rectangle('fill', item2x, item2y , 10, 10)
-        if playerx == item2x and playery <= item2y then
+        if playerx <= item2x and playery <= item2y then
             item2y = -100
         end
     end
 
     if screen == 2 then
         love.graphics.rectangle('fill', item3x, item3y , 10, 10)
-        if playerx == item3x - 20 and playery <= item3y then
+        if playerx >= item3x - 20 and playerx <= item3x and playery <= item3y  then
             item3y = -100
         end
     end
@@ -156,6 +172,10 @@ function game.draw()
         if playerx == item4x -20 and playery <= item4y then
             item4y = -100
         end
+        love.graphics.rectangle('fill', item5x, item5y , 80, 180)
+        if projectilex >= item5x and projectiley <= item5y then
+            item5y = -100
+        end
     end
 
 
@@ -164,6 +184,7 @@ function game.draw()
     love.graphics.print(screen, 300, 300)
     love.graphics.print(playery, 310, 310)
     love.graphics.print(playerx, 305, 305)
+    love.graphics.print(projectilex, 200, 305)
 
     love.graphics.draw(blank, 0, 0)
     love.graphics.draw(blank, 50, 0)
@@ -309,44 +330,8 @@ function game.keypressed(key)
         end
     end
 
-
-    if equip == 1 then
-        if shoot == true then
-            if key == 'r' then
-                shoot = false
-                slash = true
-            end
-        elseif slash == true then
-            if key == 'r' then
-                slash = false
-                shoot = true
-            end
-        end
-    elseif equip == 2 then
-        if shoot == true then
-            if key == 'r' then
-                shoot = false
-                slash = true
-            end
-        elseif slash == true then
-            if key == 'r' then
-                slash = false
-                shoot = true
-            end
-        end
-    elseif equip == 3 then
-        if shoot == true then
-            if key == 'r' then
-                shoot = false
-                slash = true
-            end
-        elseif slash == true then
-            if key == 'r' then
-                slash = false
-                shoot = true
-            end
-        end
-    elseif equip == 4 then
+    
+    if equip == 3 then
         if shoot == true then
             if key == 'r' then
                 shoot = false
@@ -367,8 +352,8 @@ function makeProjectile()
         dist = 0,
         accelx = 0.5,
         --img = newImage(..),
-        x = playerx,
-        y = playery + 30
+        x = projectilex,
+        y = projectiley
     }
     return pr
 
