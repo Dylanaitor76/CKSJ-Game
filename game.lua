@@ -45,6 +45,9 @@ function game.load()
     item5x = 500
     item5y = 200
 
+    item6x = 40
+    item6y = 90
+
     blank = love.graphics.newImage('blank.png')
 
     heart = love.graphics.newImage('heartfilled.png')
@@ -84,6 +87,9 @@ function game.update(dt)
         elseif playerx >= 760 then
             playerx = 760
             projectilex = 750
+        elseif playerx >= item5x - 60 and playery >= item5y then
+            playerx = playerx - 50
+            health = health -1
         end
     elseif screen == -1 then
         if playerx >= 760 then
@@ -158,6 +164,10 @@ function game.draw()
         if playerx <= item2x and playery <= item2y then
             item2y = -100
         end
+        love.graphics.rectangle('fill', item6x, item6y , 10, 10)
+        if playerx <= item6x  and playery <= item6y then
+            item6y = -100
+        end
     end
 
     if screen == 2 then
@@ -174,8 +184,9 @@ function game.draw()
         end
         love.graphics.rectangle('fill', item5x, item5y , 80, 180)
         if projectilex >= item5x and projectiley <= item5y then
-            item5y = -100
+            item5y = 1000
         end
+
     end
 
 
@@ -266,6 +277,11 @@ function game.draw()
         love.graphics.print("4", 170, 535)
         love.graphics.setColor(1, 1, 1)
     end
+
+    if item6y == -100 then
+        state = v
+        state.load()
+    end
     
     for i=1, #projectiles do
         love.graphics.rectangle('fill', projectiles[i].x, projectiles[i].y, 20, 20)
@@ -341,6 +357,13 @@ function game.keypressed(key)
             if key == 'r' then
                 slash = false
                 shoot = true
+            end
+        end
+        if shoot == true then
+            if screen == 3 then
+                if key == 'e' then
+                    item5y = 1000
+                end
             end
         end
     end
