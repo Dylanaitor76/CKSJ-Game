@@ -157,12 +157,18 @@ function game.draw()
         if playerx == item1x - 20 and playery <= item1y then
             item1y = -100
         end
+        if item1y == -100 then
+            love.graphics.print("You have aquired the Backtrack Boots, use '1' to select them and use 'a' to move to the left",100 ,400)
+        end
     end
     
     if screen == -1 then
         love.graphics.rectangle('fill', item2x, item2y , 10, 10)
         if playerx <= item2x and playery <= item2y then
             item2y = -100
+        end
+        if item2y == -100 then
+            love.graphics.print("You have aquired the Jump Blade, use '2' to select them and use 'spacebar' to jump",100 ,400)
         end
         love.graphics.rectangle('fill', item6x, item6y , 10, 10)
         if playerx <= item6x  and playery <= item6y then
@@ -175,12 +181,18 @@ function game.draw()
         if playerx >= item3x - 20 and playerx <= item3x and playery <= item3y  then
             item3y = -100
         end
+        if item3y == -100 then
+            love.graphics.print("You have aquired the Switch Gun, use '3' to select them and use 'e' to shoot",100 ,400)
+        end
     end
 
     if screen == 3 then
         love.graphics.rectangle('fill', item4x, item4y , 10, 10)
         if playerx == item4x -20 and playery <= item4y then
             item4y = -100
+        end
+        if item4y == -100 then
+            love.graphics.print("You have aquired the Booster Blade, use 'spacebar' twice to jump twice. You now also move faster.",100 ,400)
         end
         love.graphics.rectangle('fill', item5x, item5y , 80, 180)
         if projectilex >= item5x and projectiley <= item5y then
@@ -192,10 +204,7 @@ function game.draw()
 
     love.graphics.setColor(1, 1, 1)
     love.graphics.draw(player, playerx, playery)
-    love.graphics.print(screen, 300, 300)
-    love.graphics.print(playery, 310, 310)
-    love.graphics.print(playerx, 305, 305)
-    love.graphics.print(projectilex, 200, 305)
+   
 
     love.graphics.draw(blank, 0, 0)
     love.graphics.draw(blank, 50, 0)
